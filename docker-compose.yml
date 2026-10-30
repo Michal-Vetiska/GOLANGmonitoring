@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      PULSEWATCH_ADDR: ":8080"
+      PULSEWATCH_DB: /app/data/pulsewatch.db
+      PULSEWATCH_WORKERS: "5"
+      PULSEWATCH_HTTP_TIMEOUT_SEC: "5"
+    volumes:
+      - pulsewatch-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE: ""
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pulsewatch-data:
